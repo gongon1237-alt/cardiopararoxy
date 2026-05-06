@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Purra 2021 | Resultados interactivos</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f5f7fb;
+      --ink: #17212f;
+      --muted: #657184;
+      --line: #d8dee8;
+      --panel: #ffffff;
+      --panel-2: #eef3f8;
+      --teal: #0f8b8d;
+      --coral: #d95d39;
+      --gold: #d6a11d;
+      --violet: #6b5b95;
+      --green: #4f8a5b;
+      --red: #b94646;
+      --blue: #3273a8;
+      --shadow: 0 18px 45px rgba(31, 45, 61, 0.12);
+      --radius: 8px;
+      --gap: 18px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(90deg, rgba(15, 139, 141, 0.08), transparent 34%),
+        linear-gradient(180deg, #fbfcfe 0%, var(--paper) 58%, #eef2f7 100%);
+      color: var(--ink);
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    .app {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 22px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 20px;
+      align-items: start;
+      padding: 14px 0 22px;
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--teal);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 920px;
+      margin: 0;
+      font-size: 2.35rem;
+      line-height: 1.08;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      max-width: 880px;
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .source {
+      width: min(360px, 100%);
+      padding: 14px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .source strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .source span,
+    .source a {
+      display: block;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: 290px minmax(0, 1fr);
+      gap: var(--gap);
+      align-items: start;
+    }
+
+    .rail {
+      position: sticky;
+      top: 18px;
+      display: grid;
+      gap: var(--gap);
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-pad {
+      padding: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 0 0 12px;
+      font-size: 1.02rem;
+      line-height: 1.2;
+    }
+
+    .panel-title small {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .cohort {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .cohort-item {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      min-width: 0;
+    }
+
+    .cohort-item b {
+      display: block;
+      font-size: 1.75rem;
+      line-height: 1;
+    }
+
+    .cohort-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      line-height: 1.25;
+    }
+
+    .match-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .match-list li {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .dot.coral { background: var(--coral); }
+    .dot.gold { background: var(--gold); }
+    .dot.violet { background: var(--violet); }
+
+    .tabs {
+      display: grid;
+      gap: 8px;
+    }
+
+    .tab-button {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 10px;
+      align-items: center;
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fff;
+      color: var(--ink);
+      text-align: left;
+      transition: border-color 160ms ease, transform 160ms ease, background-color 160ms ease;
+    }
+
+    .tab-button:hover {
+      border-color: #9ab4c9;
+      transform: translateY(-1px);
+    }
+
+    .tab-button.active {
+      border-color: var(--ink);
+      background: #17212f;
+      color: #fff;
+    }
+
+    .tab-icon {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--panel-2);
+      color: var(--ink);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .tab-button.active .tab-icon {
+      background: #fff;
+      color: var(--ink);
+    }
+
+    .tab-copy b,
+    .tab-copy span {
+      display: block;
+    }
+
+    .tab-copy b {
+      font-size: 0.92rem;
+    }
+
+    .tab-copy span {
+      margin-top: 2px;
+      color: inherit;
+      opacity: 0.72;
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+
+    .main {
+      display: grid;
+      gap: var(--gap);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--gap);
+    }
+
+    .metric-card {
+      position: relative;
+      min-height: 150px;
+      padding: 16px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background: var(--panel);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .metric-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-top: 5px solid var(--accent, var(--teal));
+      pointer-events: none;
+    }
+
+    .metric-card h2 {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .metric-value {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .metric-value b {
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .metric-value span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .metric-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
+    .stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(310px, 0.8fr);
+      gap: 0;
+      min-height: 505px;
+    }
+
+    .viz {
+      padding: 20px;
+      border-right: 1px solid var(--line);
+      min-width: 0;
+    }
+
+    .viz-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .viz-head h2 {
+      margin: 0;
+      font-size: 1.25rem;
+    }
+
+    .viz-head p {
+      max-width: 620px;
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .mode-switch {
+      display: inline-grid;
+      grid-auto-flow: column;
+      gap: 4px;
+      padding: 4px;
+      border-radius: var(--radius);
+      background: var(--panel-2);
+      border: 1px solid var(--line);
+    }
+
+    .mode-switch button {
+      min-width: 78px;
+      padding: 8px 10px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .mode-switch button.active {
+      background: var(--panel);
+      color: var(--ink);
+      box-shadow: 0 5px 14px rgba(31, 45, 61, 0.13);
+    }
+
+    .chart-wrap {
+      min-height: 340px;
+      display: grid;
+      align-items: end;
+    }
+
+    .bar-chart {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(110px, 1fr));
+      gap: 16px;
+      align-items: end;
+      min-height: 290px;
+      padding: 18px 4px 0;
+    }
+
+    .bar-group {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 10px;
+      min-height: 275px;
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      align-items: end;
+      min-height: 220px;
+      border-bottom: 1px solid var(--line);
+      padding-inline: 4px;
+    }
+
+    .bar {
+      position: relative;
+      min-height: 3px;
+      border-radius: 6px 6px 0 0;
+      transition: height 360ms ease;
+    }
+
+    .bar.case {
+      background: var(--coral);
+    }
+
+    .bar.control {
+      background: var(--teal);
+    }
+
+    .bar span {
+      position: absolute;
+      left: 50%;
+      bottom: calc(100% + 7px);
+      transform: translateX(-50%);
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .bar-label {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .bar-label b {
+      font-size: 0.84rem;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+
+    .bar-label small {
+      color: var(--muted);
+      font-size: 0.74rem;
+      line-height: 1.25;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .legend span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend i {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+
+    .story {
+      padding: 20px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+      background: #fbfcfe;
+    }
+
+    .heart-box {
+      display: grid;
+      grid-template-columns: 150px 1fr;
+      gap: 14px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .heart-svg {
+      width: 150px;
+      height: 150px;
+      display: block;
+    }
+
+    .heart-copy h3,
+    .callout h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+
+    .heart-copy p,
+    .callout p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.48;
+    }
+
+    .focus-list {
+      display: grid;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .focus-list li {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      padding: 10px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .focus-list b {
+      font-size: 0.86rem;
+    }
+
+    .focus-list span {
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.35;
+    }
+
+    .callout {
+      padding: 14px;
+      border-left: 5px solid var(--accent, var(--teal));
+      background: var(--panel);
+      border-radius: var(--radius);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: var(--gap);
+    }
+
+    .calc-stage {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .calc-stage h2,
+    .matrix h2,
+    .manifest h2,
+    .conclusion h2 {
+      margin: 0 0 6px;
+      font-size: 1.16rem;
+    }
+
+    .section-copy {
+      margin: 0 0 16px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .rings {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .ring-card {
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      min-width: 0;
+      background: #fbfcfe;
+    }
+
+    .ring-card svg {
+      width: 110px;
+      height: 110px;
+    }
+
+    .ring-card b {
+      text-align: center;
+      font-size: 0.88rem;
+      line-height: 1.2;
+    }
+
+    .ring-card small {
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+
+    .risk-panel {
+      display: grid;
+      gap: 11px;
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .risk-row {
+      display: grid;
+      grid-template-columns: 115px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .risk-row:last-child {
+      border-bottom: 0;
+    }
+
+    .risk-row b {
+      font-size: 0.84rem;
+      line-height: 1.25;
+    }
+
+    .risk-track {
+      height: 11px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      overflow: hidden;
+    }
+
+    .risk-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--accent, var(--teal));
+      transition: width 360ms ease;
+    }
+
+    .risk-row span {
+      min-width: 70px;
+      text-align: right;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .matrix {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .matrix-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(270px, 0.85fr);
+      gap: var(--gap);
+      align-items: start;
+    }
+
+    .heatmap {
+      display: grid;
+      grid-template-columns: 116px repeat(6, minmax(50px, 1fr));
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .heat-cell,
+    .heat-head,
+    .heat-row-head {
+      min-height: 46px;
+      display: grid;
+      place-items: center;
+      padding: 6px;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: #fbfcfe;
+      text-align: center;
+      font-size: 0.76rem;
+      line-height: 1.15;
+      min-width: 0;
+    }
+
+    .heat-head,
+    .heat-row-head {
+      color: var(--muted);
+      font-weight: 800;
+    }
+
+    .heat-cell {
+      color: var(--ink);
+      font-weight: 800;
+      position: relative;
+      transition: transform 150ms ease, outline-color 150ms ease;
+    }
+
+    .heat-cell:hover,
+    .heat-cell.active {
+      transform: translateY(-1px);
+      outline: 2px solid var(--ink);
+      outline-offset: 1px;
+    }
+
+    .heat-cell .sig {
+      position: absolute;
+      top: 4px;
+      right: 5px;
+      font-size: 0.75rem;
+    }
+
+    .detail-panel {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfe;
+      min-height: 265px;
+    }
+
+    .detail-panel h3 {
+      margin: 0 0 8px;
+      font-size: 1.04rem;
+    }
+
+    .detail-panel .r {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 86px;
+      height: 36px;
+      margin: 8px 0;
+      border-radius: 999px;
+      background: var(--ink);
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .detail-panel p {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .manifest {
+      padding: 18px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .manifest-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .manifest-item {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: #fbfcfe;
+      min-height: 128px;
+    }
+
+    .manifest-item b {
+      display: block;
+      font-size: 1.65rem;
+      line-height: 1;
+    }
+
+    .manifest-item span {
+      display: block;
+      margin: 8px 0 10px;
+      min-height: 34px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.3;
+    }
+
+    .mini-track {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--panel-2);
+      overflow: hidden;
+    }
+
+    .mini-track i {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      border-radius: inherit;
+      background: var(--accent);
+    }
+
+    .conclusion {
+      padding: 20px;
+      background: #17212f;
+      color: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .conclusion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .conclusion-item {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .conclusion p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.74);
+      line-height: 1.48;
+      font-size: 0.94rem;
+    }
+
+    .conclusion-item b {
+      display: block;
+      margin-bottom: 8px;
+      color: #fff;
+      font-size: 0.96rem;
+    }
+
+    .footer-note {
+      margin: 16px 0 0;
+      color: rgba(255, 255, 255, 0.62);
+      font-size: 0.78rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 1120px) {
+      .dashboard,
+      .stage,
+      .calc-grid,
+      .matrix-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .rail {
+        position: static;
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .viz {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .app {
+        padding: 14px;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 1.72rem;
+      }
+
+      .rail,
+      .summary-grid,
+      .manifest-grid,
+      .conclusion-grid,
+      .rings,
+      .bar-chart {
+        grid-template-columns: 1fr;
+      }
+
+      .heart-box {
+        grid-template-columns: 1fr;
+      }
+
+      .heart-svg {
+        margin: 0 auto;
+      }
+
+      .mode-switch {
+        width: 100%;
+        grid-auto-flow: row;
+      }
+
+      .viz-head {
+        display: grid;
+      }
+
+      .heatmap {
+        grid-template-columns: 98px repeat(6, minmax(54px, 1fr));
+        overflow-x: auto;
+      }
+
+      .risk-row {
+        grid-template-columns: 1fr;
+        gap: 6px;
+      }
+
+      .risk-row span {
+        text-align: left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Resultados interactivos del trabajo de Purra et al., 2021</p>
+        <h1>Hiperparatiroidismo primario: lo que el ecocardiograma reveló antes de que el corazón levantara la mano</h1>
+        <p class="subtitle">
+          Estudio prospectivo caso-control sobre anomalías estructurales y funcionales cardíacas en pacientes con hiperparatiroidismo primario sintomático. El recorrido separa el ruido clínico de las señales: masa ventricular, llenado diastólico, calcificaciones y correlaciones bioquímicas.
+        </p>
+      </div>
+      <aside class="source" aria-label="Fuente del artículo">
+        <strong>Artículo fuente</strong>
+        <span>Cardiac structural and functional abnormalities in primary hyperparathyroidism</span>
+        <span>Journal of Endocrinological Investigation</span>
+        <a href="https://doi.org/10.1007/s40618-021-01645-x">doi.org/10.1007/s40618-021-01645-x</a>
+      </aside>
+    </header>
+
+    <section class="dashboard">
+      <aside class="rail">
+        <div class="panel panel-pad">
+          <h2 class="panel-title">Cohorte <small>n = 213</small></h2>
+          <div class="cohort">
+            <div class="cohort-item">
+              <b>100</b>
+              <span>pacientes con PHPT sintomático</span>
+            </div>
+            <div class="cohort-item">
+              <b>113</b>
+              <span>controles emparejados</span>
+            </div>
+          </div>
+          <ul class="match-list">
+            <li><i class="dot"></i>Edad y sexo similares</li>
+            <li><i class="dot coral"></i>Hipertensión, diabetes y tabaquismo comparables</li>
+            <li><i class="dot gold"></i>Ecocardiografía por un operador cegado</li>
+            <li><i class="dot violet"></i>Pacientes evaluados antes de paratiroidectomía</li>
+          </ul>
+        </div>
+
+        <nav class="panel panel-pad" aria-label="Módulos de resultados">
+          <h2 class="panel-title">Territorios</h2>
+          <div class="tabs" id="tabs"></div>
+        </nav>
+      </aside>
+
+      <div class="main">
+        <section class="summary-grid" aria-label="Hallazgos principales">
+          <article class="metric-card" style="--accent: var(--violet)">
+            <h2>Masa ventricular</h2>
+            <div class="metric-value"><b>90.95</b><span>vs 85.6 g/m²</span></div>
+            <p>El índice de masa ventricular izquierda fue mayor en PHPT, con p = 0.041.</p>
+          </article>
+          <article class="metric-card" style="--accent: var(--blue)">
+            <h2>Llenado temprano</h2>
+            <div class="metric-value"><b>57.13</b><span>vs 64.76 cm/s</span></div>
+            <p>La velocidad E fue menor en PHPT, una señal compatible con disfunción diastólica.</p>
+          </article>
+          <article class="metric-card" style="--accent: var(--coral)">
+            <h2>Calcificación aórtica</h2>
+            <div class="metric-value"><b>29%</b><span>vs 2.65%</span></div>
+            <p>La diferencia más visible: más depósitos valvulares en pacientes sintomáticos.</p>
+          </article>
+          <article class="metric-card" style="--accent: var(--green)">
+            <h2>Correlación clave</h2>
+            <div class="metric-value"><b>-0.255</b><span>Ca vs E/A</span></div>
+            <p>A mayor calcio sérico, menor relación E/A; p = 0.011.</p>
+          </article>
+        </section>
+
+        <section class="panel stage" aria-label="Comparador de resultados">
+          <div class="viz">
+            <div class="viz-head">
+              <div>
+                <h2 id="moduleTitle">Estructura cardíaca</h2>
+                <p id="moduleIntro"></p>
+              </div>
+              <div class="mode-switch" aria-label="Modo de gráfico">
+                <button type="button" data-chart-mode="absolute" class="active">Valores</button>
+                <button type="button" data-chart-mode="difference">Brecha</button>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <div class="bar-chart" id="barChart" aria-live="polite"></div>
+            </div>
+            <div class="legend">
+              <span><i style="background: var(--coral)"></i>PHPT</span>
+              <span><i style="background: var(--teal)"></i>Controles</span>
+              <span>p &lt; 0.05 marca una diferencia estadísticamente significativa.</span>
+            </div>
+          </div>
+          <aside class="story">
+            <div class="heart-box">
+              <svg class="heart-svg" viewBox="0 0 180 180" role="img" aria-label="Ilustración del corazón con focos de calcificación">
+                <defs>
+                  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feDropShadow dx="0" dy="6" stdDeviation="5" flood-color="#17212f" flood-opacity="0.18"/>
+                  </filter>
+                </defs>
+                <path id="heartShape" d="M91 153 C38 118 18 83 31 50 C40 29 66 24 89 48 C112 24 139 29 149 51 C164 85 142 119 91 153 Z" fill="#d95d39" filter="url(#softShadow)"/>
+                <path d="M89 49 C88 73 87 102 91 153" fill="none" stroke="#ffffff" stroke-opacity="0.62" stroke-width="5"/>
+                <path d="M58 60 C73 74 84 78 105 77" fill="none" stroke="#ffffff" stroke-opacity="0.46" stroke-width="5" stroke-linecap="round"/>
+                <circle class="calcium-spot" cx="128" cy="73" r="7" fill="#f2c94c"/>
+                <circle class="calcium-spot" cx="116" cy="101" r="5" fill="#f2c94c"/>
+                <circle class="calcium-spot" cx="63" cy="91" r="4" fill="#f2c94c"/>
+                <circle class="pulse-ring" cx="91" cy="93" r="58" fill="none" stroke="#3273a8" stroke-width="3" stroke-opacity="0.45"/>
+              </svg>
+              <div class="heart-copy">
+                <h3 id="heartTitle"></h3>
+                <p id="heartText"></p>
+              </div>
+            </div>
+            <ul class="focus-list" id="focusList"></ul>
+            <div class="callout" id="callout" style="--accent: var(--teal)"></div>
+          </aside>
+        </section>
+
+        <section class="calc-grid">
+          <div class="calc-stage">
+            <h2>Calcificaciones: el contraste más fácil de ver</h2>
+            <p class="section-copy">En los pacientes con PHPT sintomático, las calcificaciones aparecieron en la válvula aórtica, el anillo mitral y el miocardio/septo con una frecuencia muy superior a la de los controles.</p>
+            <div class="rings" id="rings"></div>
+          </div>
+          <div class="risk-panel">
+            <div class="viz-head" style="margin-bottom: 2px">
+              <div>
+                <h2 class="panel-title" style="margin: 0">Exceso absoluto</h2>
+                <p class="section-copy" id="riskCopy" style="margin: 3px 0 0">Diferencia de puntos porcentuales entre PHPT y controles.</p>
+              </div>
+              <div class="mode-switch" aria-label="Vista de calcificaciones">
+                <button type="button" data-risk-mode="excess" class="active">Exceso</button>
+                <button type="button" data-risk-mode="ratio">Razón</button>
+              </div>
+            </div>
+            <div id="riskRows"></div>
+          </div>
+        </section>
+
+        <section class="matrix">
+          <h2>Mapa de correlaciones bioquímicas</h2>
+          <p class="section-copy">Las asociaciones significativas se concentraron en calcio, PTH, ácido úrico y calcificaciones valvulares/anulares.</p>
+          <div class="matrix-layout">
+            <div class="heatmap" id="heatmap" aria-label="Matriz de correlaciones"></div>
+            <aside class="detail-panel" id="correlationDetail"></aside>
+          </div>
+        </section>
+
+        <section class="manifest">
+          <h2>Cómo se presentó la enfermedad en la cohorte PHPT</h2>
+          <p class="section-copy">La mayoría llegó con daño óseo o renal; el estudio se ubica en una forma sintomática y biológicamente intensa de la enfermedad.</p>
+          <div class="manifest-grid">
+            <article class="manifest-item" style="--accent: var(--violet)">
+              <b>69</b>
+              <span>con compromiso esquelético</span>
+              <div class="mini-track"><i style="--w: 69%"></i></div>
+            </article>
+            <article class="manifest-item" style="--accent: var(--teal)">
+              <b>63</b>
+              <span>con nefrolitiasis o nefrocalcinosis</span>
+              <div class="mini-track"><i style="--w: 63%"></i></div>
+            </article>
+            <article class="manifest-item" style="--accent: var(--coral)">
+              <b>6</b>
+              <span>con pancreatitis</span>
+              <div class="mini-track"><i style="--w: 6%"></i></div>
+            </article>
+            <article class="manifest-item" style="--accent: var(--gold)">
+              <b>11</b>
+              <span>sin daño óseo o renal documentado</span>
+              <div class="mini-track"><i style="--w: 11%"></i></div>
+            </article>
+          </div>
+        </section>
+
+        <section class="conclusion">
+          <h2>Lectura final</h2>
+          <p>
+            El mensaje del trabajo es clínicamente directo: en PHPT sintomático, el corazón también funciona como órgano blanco. No todo fue una diferencia enorme, pero el patrón completo —mayor LVMI, menor llenado diastólico y mucha más calcificación— sostiene que la evaluación cardiovascular no debería quedar fuera del mapa.
+          </p>
+          <div class="conclusion-grid">
+            <article class="conclusion-item">
+              <b>Estructura</b>
+              <p>El LVMI fue más alto en pacientes, aunque no correlacionó con calcio ni PTH.</p>
+            </article>
+            <article class="conclusion-item">
+              <b>Función</b>
+              <p>E y E/A fueron menores, con una relación inversa entre calcio y E/A.</p>
+            </article>
+            <article class="conclusion-item">
+              <b>Calcificación</b>
+              <p>PTH, calcio y ácido úrico se asociaron con calcificación valvular o anular.</p>
+            </article>
+          </div>
+          <p class="footer-note">Resumen visual elaborado a partir de las tablas y resultados del PDF purra2021.pdf. PHPT: hiperparatiroidismo primario; MAC: calcificación del anillo mitral; LVMI: índice de masa ventricular izquierda.</p>
+        </section>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const modules = {
+      structure: {
+        icon: "LV",
+        label: "Estructura",
+        hint: "masa, volumen, eyección",
+        title: "Estructura cardíaca",
+        intro: "El corazón de los pacientes no se veía igual: la señal estructural principal fue un LVMI más alto, con volúmenes y diámetros bastante cercanos entre grupos.",
+        heartTitle: "Más masa, no necesariamente más tamaño",
+        heartText: "La diferencia no fue un agrandamiento global del ventrículo. El indicador que cambió fue el índice de masa ventricular izquierda.",
+        calloutTitle: "Clave del módulo",
+        callout: "El LVMI fue mayor en PHPT, pero el estudio no encontró correlación significativa de LVMI con calcio ni PTH.",
+        accent: "var(--violet)",
+        metrics: [
+          { label: "LVMI", unit: "g/m²", case: 90.95, control: 85.6, p: "0.041", sig: true, note: "Índice de masa ventricular izquierda" },
+          { label: "LVESV", unit: "ml", case: 33, control: 35, p: "0.001", sig: true, note: "Volumen sistólico final" },
+          { label: "EF", unit: "%", case: 64.56, control: 62.07, p: "0.011", sig: true, note: "Fracción de eyección" },
+          { label: "LVEDV", unit: "ml", case: 94.21, control: 95.24, p: "0.713", sig: false, note: "Volumen diastólico final" }
+        ],
+        focus: [
+          ["LVMI", "90.95 vs 85.6 g/m²; p = 0.041."],
+          ["LVEF", "64.56% vs 62.07%; diferencia pequeña pero significativa."],
+          ["LVEDV", "Sin diferencia relevante entre grupos."]
+        ]
+      },
+      diastole: {
+        icon: "E/A",
+        label: "Diástole",
+        hint: "llenado ventricular",
+        title: "Función diastólica",
+        intro: "Las variables de llenado temprano se movieron en la dirección esperada para disfunción diastólica: menor velocidad E y menor relación E/A.",
+        heartTitle: "El problema aparece en el llenado",
+        heartText: "La contracción sistólica no fue la señal dominante; el hallazgo funcional se concentró en cómo se llena el ventrículo.",
+        calloutTitle: "Clave del módulo",
+        callout: "El calcio sérico mostró correlación negativa con E/A, una pista de que la hipercalcemia puede acompañar rigidez funcional.",
+        accent: "var(--blue)",
+        metrics: [
+          { label: "E-vel", unit: "cm/s", case: 57.13, control: 64.76, p: "< 0.001", sig: true, note: "Velocidad diastólica temprana" },
+          { label: "A-vel", unit: "cm/s", case: 62.18, control: 61.03, p: "0.596", sig: false, note: "Velocidad diastólica tardía" },
+          { label: "E/A", unit: "ratio", case: 0.98, control: 1.10, p: "0.013", sig: true, note: "Relación de llenado temprano/tardío" },
+          { label: "Dt", unit: "ms", case: 114, control: 112, p: "0.126", sig: false, note: "Tiempo de desaceleración" }
+        ],
+        focus: [
+          ["E-vel", "57.13 vs 64.76 cm/s; p < 0.001."],
+          ["E/A", "0.98 vs 1.10; p = 0.013."],
+          ["Lectura", "La combinación sugiere disfunción diastólica subclínica."]
+        ]
+      },
+      calcification: {
+        icon: "Ca",
+        label: "Calcificación",
+        hint: "válvulas y miocardio",
+        title: "Calcificaciones cardíacas",
+        intro: "El resultado más contundente fue anatómico: los depósitos cálcicos fueron mucho más frecuentes en PHPT, sobre todo en válvula aórtica y anillo mitral.",
+        heartTitle: "La señal dura del estudio",
+        heartText: "El contraste de frecuencias fue grande, y además varias calcificaciones se asociaron con PTH, calcio o ácido úrico.",
+        calloutTitle: "Clave del módulo",
+        callout: "La calcificación miocárdica/septal apareció en 25% de los pacientes y en ningún control.",
+        accent: "var(--coral)",
+        metrics: [
+          { label: "Aórtica", unit: "%", case: 29, control: 2.65, p: "< 0.001", sig: true, note: "Calcificación de válvula aórtica" },
+          { label: "MAC", unit: "%", case: 23, control: 4.42, p: "< 0.001", sig: true, note: "Calcificación anular mitral" },
+          { label: "Miocardio/septo", unit: "%", case: 25, control: 0, p: "< 0.001", sig: true, note: "Calcificaciones miocárdicas y septales" },
+          { label: "Aórtica grave", unit: "casos", case: 1, control: 0, p: "descriptivo", sig: false, note: "Solo un paciente tuvo grado severo" }
+        ],
+        focus: [
+          ["Aórtica", "29% en PHPT vs 2.65% en controles."],
+          ["MAC", "23% vs 4.42%, con grados leves a severos."],
+          ["Miocardio", "25% vs 0%; diferencia marcada."]
+        ]
+      },
+      chemistry: {
+        icon: "Bio",
+        label: "Bioquímica",
+        hint: "calcio, PTH, urato",
+        title: "Bioquímica y eco",
+        intro: "La química sanguínea no explicó todo, pero sí dejó rastros: calcio, PTH y ácido úrico se relacionaron especialmente con calcificaciones.",
+        heartTitle: "La señal bioquímica no fue uniforme",
+        heartText: "LVMI no se asoció con calcio ni PTH; en cambio, las calcificaciones sí concentraron las correlaciones más claras.",
+        calloutTitle: "Clave del módulo",
+        callout: "PTH se correlacionó con MAC con r = 0.385, la asociación más intensa entre las reportadas.",
+        accent: "var(--green)",
+        metrics: [
+          { label: "Calcio", unit: "mg/dl", case: 11.88, control: 9.5, p: "< 0.001", sig: true, note: "Mediana sérica" },
+          { label: "Fosfato", unit: "mg/dl", case: 2.29, control: 3.4, p: "< 0.001", sig: true, note: "Mediana sérica" },
+          { label: "Ácido úrico", unit: "mg/dl", case: 5.95, control: 4.6, p: "< 0.001", sig: true, note: "Mediana sérica" },
+          { label: "LDL", unit: "mg/dl", case: 105, control: 94, p: "0.006", sig: true, note: "Mediana" }
+        ],
+        focus: [
+          ["Calcio", "11.88 vs 9.5 mg/dl; p < 0.001."],
+          ["PTH", "Mediana 187.2 pg/ml en PHPT."],
+          ["Urato", "5.95 vs 4.6 mg/dl; correlacionó con calcificaciones."]
+        ]
+      }
+    };
+
+    const calcifications = [
+      { label: "Válvula aórtica", case: 29, control: 2.65, color: "#d95d39" },
+      { label: "Anillo mitral", case: 23, control: 4.42, color: "#6b5b95" },
+      { label: "Miocardio/septo", case: 25, control: 0, color: "#d6a11d" }
+    ];
+
+    const correlationRows = [
+      { bio: "Calcio", echo: "E/A", r: -0.255, p: "0.011", sig: true, read: "A mayor calcio, menor E/A: una señal de peor llenado diastólico." },
+      { bio: "Calcio", echo: "LVMI", r: 0.127, p: "0.208", sig: false, read: "No hubo asociación significativa entre calcio y masa ventricular." },
+      { bio: "Calcio", echo: "Aórtica", r: 0.234, p: "0.019", sig: true, read: "El calcio sérico se asoció con calcificación de la válvula aórtica." },
+      { bio: "Calcio", echo: "MAC", r: 0.156, p: "0.123", sig: false, read: "Tendencia positiva, sin significación estadística." },
+      { bio: "Calcio", echo: "ESV", r: 0.080, p: "0.432", sig: false, read: "Asociación débil y no significativa con volumen sistólico final." },
+      { bio: "Calcio", echo: "EF", r: 0.120, p: "0.235", sig: false, read: "Asociación no significativa con fracción de eyección." },
+      { bio: "iPTH", echo: "E/A", r: -0.054, p: "0.593", sig: false, read: "PTH no mostró relación clara con E/A." },
+      { bio: "iPTH", echo: "LVMI", r: 0.110, p: "0.276", sig: false, read: "No se confirmó asociación entre PTH y LVMI en esta cohorte." },
+      { bio: "iPTH", echo: "Aórtica", r: 0.218, p: "0.029", sig: true, read: "PTH se asoció con calcificación aórtica." },
+      { bio: "iPTH", echo: "MAC", r: 0.385, p: "< 0.001", sig: true, read: "Fue la correlación más fuerte reportada: PTH y calcificación anular mitral." },
+      { bio: "iPTH", echo: "ESV", r: 0.076, p: "0.45", sig: false, read: "Sin relación significativa con volumen sistólico final." },
+      { bio: "iPTH", echo: "EF", r: -0.156, p: "0.12", sig: false, read: "Relación negativa leve, no significativa." },
+      { bio: "25-OHD", echo: "E/A", r: -0.194, p: "0.053", sig: false, read: "Casi significativa, pero no cruza el umbral del estudio." },
+      { bio: "25-OHD", echo: "LVMI", r: -0.020, p: "0.843", sig: false, read: "Prácticamente sin asociación con LVMI." },
+      { bio: "25-OHD", echo: "Aórtica", r: 0.014, p: "0.527", sig: false, read: "Sin relación clara con calcificación aórtica." },
+      { bio: "25-OHD", echo: "MAC", r: 0.016, p: "0.857", sig: false, read: "Sin relación clara con MAC." },
+      { bio: "25-OHD", echo: "ESV", r: -0.031, p: "0.194", sig: false, read: "Relación no significativa." },
+      { bio: "25-OHD", echo: "EF", r: 0.069, p: "0.494", sig: false, read: "Relación no significativa con fracción de eyección." },
+      { bio: "Ácido úrico", echo: "E/A", r: -0.159, p: "0.113", sig: false, read: "Relación negativa, no significativa." },
+      { bio: "Ácido úrico", echo: "LVMI", r: 0.114, p: "0.259", sig: false, read: "No hubo asociación significativa con LVMI." },
+      { bio: "Ácido úrico", echo: "Aórtica", r: 0.245, p: "0.014", sig: true, read: "El ácido úrico se asoció con calcificación aórtica." },
+      { bio: "Ácido úrico", echo: "MAC", r: 0.283, p: "0.005", sig: true, read: "El ácido úrico también se asoció con MAC." },
+      { bio: "Ácido úrico", echo: "ESV", r: 0.164, p: "0.104", sig: false, read: "Relación no significativa con volumen sistólico final." },
+      { bio: "Ácido úrico", echo: "EF", r: -0.184, p: "0.067", sig: false, read: "Cerca del umbral, pero no significativa." }
+    ];
+
+    const state = {
+      module: "structure",
+      chartMode: "absolute",
+      riskMode: "excess",
+      activeCorrelation: correlationRows[0]
+    };
+
+    const tabs = document.querySelector("#tabs");
+    const barChart = document.querySelector("#barChart");
+    const moduleTitle = document.querySelector("#moduleTitle");
+    const moduleIntro = document.querySelector("#moduleIntro");
+    const heartTitle = document.querySelector("#heartTitle");
+    const heartText = document.querySelector("#heartText");
+    const focusList = document.querySelector("#focusList");
+    const callout = document.querySelector("#callout");
+    const rings = document.querySelector("#rings");
+    const riskRows = document.querySelector("#riskRows");
+    const riskCopy = document.querySelector("#riskCopy");
+    const heatmap = document.querySelector("#heatmap");
+    const detail = document.querySelector("#correlationDetail");
+
+    function formatValue(value) {
+      if (value === 0) return "0";
+      if (Math.abs(value) >= 100) return String(Math.round(value));
+      if (Math.abs(value) >= 10) return String(Math.round(value * 100) / 100);
+      return String(Math.round(value * 1000) / 1000);
+    }
+
+    function renderTabs() {
+      tabs.innerHTML = Object.entries(modules).map(([key, mod]) => `
+        <button type="button" class="tab-button ${key === state.module ? "active" : ""}" data-module="${key}">
+          <span class="tab-icon">${mod.icon}</span>
+          <span class="tab-copy"><b>${mod.label}</b><span>${mod.hint}</span></span>
+        </button>
+      `).join("");
+
+      tabs.querySelectorAll("button").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.module = button.dataset.module;
+          render();
+        });
+      });
+    }
+
+    function renderModule() {
+      const mod = modules[state.module];
+      moduleTitle.textContent = mod.title;
+      moduleIntro.textContent = mod.intro;
+      heartTitle.textContent = mod.heartTitle;
+      heartText.textContent = mod.heartText;
+      callout.style.setProperty("--accent", mod.accent);
+      callout.innerHTML = `<h3>${mod.calloutTitle}</h3><p>${mod.callout}</p>`;
+      document.querySelector("#heartShape").setAttribute("fill", state.module === "diastole" ? "#3273a8" : state.module === "chemistry" ? "#4f8a5b" : state.module === "structure" ? "#6b5b95" : "#d95d39");
+      document.querySelectorAll(".calcium-spot").forEach((spot) => {
+        spot.style.opacity = state.module === "calcification" || state.module === "chemistry" ? "1" : "0.35";
+      });
+      document.querySelector(".pulse-ring").style.strokeOpacity = state.module === "diastole" ? "0.8" : "0.35";
+
+      focusList.innerHTML = mod.focus.map(([label, text]) => `
+        <li><b>${label}</b><span>${text}</span></li>
+      `).join("");
+    }
+
+    function renderChart() {
+      const mod = modules[state.module];
+      const values = mod.metrics.flatMap((metric) => [metric.case, metric.control]);
+      const maxAbs = Math.max(...values.map((v) => Math.abs(v)), 1);
+      const differences = mod.metrics.map((metric) => metric.case - metric.control);
+      const maxDiff = Math.max(...differences.map((v) => Math.abs(v)), 1);
+
+      barChart.innerHTML = mod.metrics.map((metric) => {
+        const caseHeight = state.chartMode === "absolute" ? (metric.case / maxAbs) * 100 : Math.abs(metric.case - metric.control) / maxDiff * 100;
+        const controlHeight = state.chartMode === "absolute" ? (metric.control / maxAbs) * 100 : 10;
+        const caseLabel = state.chartMode === "absolute" ? formatValue(metric.case) : `${metric.case - metric.control >= 0 ? "+" : ""}${formatValue(metric.case - metric.control)}`;
+        const controlLabel = state.chartMode === "absolute" ? formatValue(metric.control) : "base";
+        return `
+          <article class="bar-group">
+            <div class="bars">
+              <div class="bar case" style="height: ${Math.max(caseHeight, 3)}%"><span>${caseLabel}</span></div>
+              <div class="bar control" style="height: ${Math.max(controlHeight, 3)}%"><span>${controlLabel}</span></div>
+            </div>
+            <div class="bar-label">
+              <b>${metric.label}</b>
+              <small>${metric.note}. ${metric.unit}. p = ${metric.p}${metric.sig ? " *" : ""}</small>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function ringSvg(item) {
+      const circumference = 2 * Math.PI * 44;
+      const innerCircumference = 2 * Math.PI * 29;
+      const caseDash = circumference * item.case / 100;
+      const controlDash = innerCircumference * item.control / 100;
+      return `
+        <svg viewBox="0 0 110 110" role="img" aria-label="${item.label}">
+          <circle cx="55" cy="55" r="44" fill="none" stroke="#e6ebf2" stroke-width="12"/>
+          <circle cx="55" cy="55" r="44" fill="none" stroke="${item.color}" stroke-width="12" stroke-linecap="round"
+            stroke-dasharray="${caseDash} ${circumference - caseDash}" transform="rotate(-90 55 55)"/>
+          <circle cx="55" cy="55" r="29" fill="none" stroke="#0f8b8d" stroke-width="8" stroke-linecap="round"
+            stroke-dasharray="${controlDash} ${innerCircumference - controlDash}" transform="rotate(-90 55 55)"/>
+          <text x="55" y="53" text-anchor="middle" font-size="18" font-weight="900" fill="#17212f">${item.case}%</text>
+          <text x="55" y="70" text-anchor="middle" font-size="10" fill="#657184">PHPT</text>
+        </svg>
+      `;
+    }
+
+    function renderRings() {
+      rings.innerHTML = calcifications.map((item) => `
+        <article class="ring-card">
+          ${ringSvg(item)}
+          <b>${item.label}</b>
+          <small>Control: ${item.control}%</small>
+        </article>
+      `).join("");
+    }
+
+    function renderRisk() {
+      const values = calcifications.map((item) => {
+        if (state.riskMode === "ratio") {
+          return item.control === 0 ? null : item.case / item.control;
+        }
+        return item.case - item.control;
+      });
+      const finite = values.filter((value) => Number.isFinite(value));
+      const max = Math.max(...finite, 1);
+      riskCopy.textContent = state.riskMode === "ratio"
+        ? "Razón entre frecuencia en PHPT y frecuencia en controles."
+        : "Diferencia de puntos porcentuales entre PHPT y controles.";
+
+      riskRows.innerHTML = calcifications.map((item, index) => {
+        const value = values[index];
+        const width = value === null ? 100 : Math.max((value / max) * 100, 4);
+        const label = value === null ? "sin casos control" : state.riskMode === "ratio" ? `${formatValue(value)}x` : `+${formatValue(value)} pp`;
+        return `
+          <div class="risk-row" style="--accent: ${item.color}">
+            <b>${item.label}</b>
+            <div class="risk-track"><div class="risk-fill" style="width: ${width}%"></div></div>
+            <span>${label}</span>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function colorForR(value) {
+      const intensity = Math.min(Math.abs(value) / 0.4, 1);
+      const alpha = 0.18 + intensity * 0.62;
+      if (value < 0) return `rgba(50, 115, 168, ${alpha})`;
+      return `rgba(217, 93, 57, ${alpha})`;
+    }
+
+    function renderHeatmap() {
+      const bios = ["Calcio", "iPTH", "25-OHD", "Ácido úrico"];
+      const echos = ["E/A", "LVMI", "Aórtica", "MAC", "ESV", "EF"];
+      const lookup = new Map(correlationRows.map((row) => [`${row.bio}-${row.echo}`, row]));
+      let html = `<div class="heat-head"></div>${echos.map((echo) => `<div class="heat-head">${echo}</div>`).join("")}`;
+      bios.forEach((bio) => {
+        html += `<div class="heat-row-head">${bio}</div>`;
+        echos.forEach((echo) => {
+          const row = lookup.get(`${bio}-${echo}`);
+          const active = row === state.activeCorrelation ? "active" : "";
+          html += `
+            <button type="button" class="heat-cell ${active}" data-bio="${bio}" data-echo="${echo}" style="background: ${colorForR(row.r)}">
+              ${row.r > 0 ? "+" : ""}${row.r.toFixed(3)}
+              ${row.sig ? `<span class="sig">*</span>` : ""}
+            </button>
+          `;
+        });
+      });
+      heatmap.innerHTML = html;
+      heatmap.querySelectorAll(".heat-cell").forEach((cell) => {
+        cell.addEventListener("click", () => {
+          state.activeCorrelation = lookup.get(`${cell.dataset.bio}-${cell.dataset.echo}`);
+          renderHeatmap();
+          renderCorrelationDetail();
+        });
+      });
+    }
+
+    function renderCorrelationDetail() {
+      const row = state.activeCorrelation;
+      const direction = row.r < 0 ? "inversa" : "directa";
+      detail.innerHTML = `
+        <h3>${row.bio} ↔ ${row.echo}</h3>
+        <div class="r">r = ${row.r > 0 ? "+" : ""}${row.r.toFixed(3)}</div>
+        <p><b>p = ${row.p}${row.sig ? " | significativa" : " | no significativa"}</b></p>
+        <p>Relación ${direction}. ${row.read}</p>
+      `;
+    }
+
+    function wireModeButtons() {
+      document.querySelectorAll("[data-chart-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.chartMode = button.dataset.chartMode;
+          document.querySelectorAll("[data-chart-mode]").forEach((btn) => btn.classList.toggle("active", btn === button));
+          renderChart();
+        });
+      });
+      document.querySelectorAll("[data-risk-mode]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.riskMode = button.dataset.riskMode;
+          document.querySelectorAll("[data-risk-mode]").forEach((btn) => btn.classList.toggle("active", btn === button));
+          renderRisk();
+        });
+      });
+    }
+
+    function render() {
+      renderTabs();
+      renderModule();
+      renderChart();
+      renderRings();
+      renderRisk();
+      renderHeatmap();
+      renderCorrelationDetail();
+    }
+
+    wireModeButtons();
+    render();
+  </script>
+</body>
+</html>
